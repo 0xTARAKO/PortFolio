@@ -43,10 +43,8 @@ export class Crypto {
             })
         })
     }
-    async Draw( prompt ) {
-        this.asset = this.crypto.filter( res => { return res.id.toUpperCase() === prompt || res.symbol === prompt })
-        if( this.asset.length !== 1 ) return console.log( this.asset )
-        this.kline = `https://api.coingecko.com/api/v3/coins/${this.asset[0].id}/market_chart?vs_currency=usd&days=1`
+    async Draw( asset ) {
+        this.kline = `https://api.coingecko.com/api/v3/coins/${asset.id}/market_chart?vs_currency=usd&days=1`
         this.chart = await fetch( this.kline ).then( res => res.json())
         let high , i , height
         high = [...this.chart.prices].sort(( a , b ) => a[1] < b[1] )
@@ -57,15 +55,13 @@ export class Crypto {
         
         this.ctx.beginPath()
         this.grad = this.ctx.createLinearGradient( 150 , 70 , 150 , 110 )
-        this.grad.addColorStop( 0.0 , `hsl(${Math.random()*360} 100% 50%)`)
-        this.grad.addColorStop( 0.3 , `hsl(${Math.random()*360} 100% 50%)`)
-        this.grad.addColorStop( 0.6 , `hsl(${Math.random()*360} 100% 50%)`)
-        this.grad.addColorStop( 1.0 , `hsl(${Math.random()*360} 100% 50%)`)
+        this.grad.addColorStop( 0.0 , 'orange')
+        this.grad.addColorStop( 1.0 , 'aqua')
         this.ctx.fillStyle = this.grad
         this.ctx.moveTo( 0 , 150 )
         for( i = 0; i < 288; i++ ) {
             height = ( this.chart.prices[i][1] - high[288][1] ) / ( high[0][1] - high[288][1] )
-            this.ctx.lineTo( i * 1.0417 , ( 40 * height ) + 70 )
+            this.ctx.lineTo( i * 1.0417 , ( 40 * height + 70 ))
         }
         this.ctx.lineTo( 300 , 150 )
         this.ctx.fill()
@@ -73,19 +69,19 @@ export class Crypto {
         this.ctx.beginPath()
         this.ctx.fillStyle = 'white'
         this.ctx.font = '20px serif'
-        this.ctx.fillText( this.asset[0].symbol +' ( '+ this.asset[0].name +' )', 150 , 30 )
+        this.ctx.fillText( `${asset.symbol} ( ${asset.name} )`, 150 , 30 )
         this.ctx.beginPath()
         this.ctx.fillStyle = 'white'
         this.ctx.font = '40px serif'
-        this.ctx.fillText( `${this.asset[0].price} $`, 150 , 80 )
+        this.ctx.fillText( `${asset.price} $`, 150 , 80 )
         this.ctx.beginPath()
         this.ctx.font = '20px serif'
-        if( this.asset[0].percent >= 0 ) {
+        if( asset.percent >= 0 ) {
             this.ctx.fillStyle = 'green'
-            this.ctx.fillText( `+${this.asset[0].percent} %`, 150 , 110 )
+            this.ctx.fillText( `+${asset.percent} %`, 150 , 110 )
         } else {
             this.ctx.fillStyle = 'red'
-            this.ctx.fillText( `${this.asset[0].percent} %`, 150 , 100 )
+            this.ctx.fillText( `${asset.percent} %`, 150 , 100 )
         }
         this.ctx.beginPath()
         this.ctx.fillStyle = 'lime'

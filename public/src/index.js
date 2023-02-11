@@ -9,5 +9,9 @@ const crypto = new Crypto( canvas.ctx )
 onload = () => canvas.Animate()
 onresize = () => canvas.Resize()
 onkeydown = ( e ) => {
-    if( e.code === 'KeyP' ) crypto.Draw( prompt('Crypto Currency Symbol').toUpperCase())
+    if( e.code === 'KeyP' ) {
+        let promp = prompt('Crypto Currency Name or Symbol').toUpperCase()
+        let asset = crypto.crypto.filter( res => res.id.toUpperCase() === promp || res.symbol === promp )
+        crypto.Draw( asset[0] )
+    }
 }
