@@ -54,16 +54,13 @@ export class Crypto {
         this.ctx.fillRect( 0 , 0 , 300 , 150 )
         
         this.ctx.beginPath()
-        this.grad = this.ctx.createLinearGradient( 150 , 70 , 150 , 110 )
-        this.grad.addColorStop( 0.0 , 'orange')
-        this.grad.addColorStop( 1.0 , 'aqua')
-        this.ctx.fillStyle = this.grad
-        this.ctx.moveTo( 0 , 150 )
+        this.ctx.fillStyle = 'orange'
+        this.ctx.moveTo( 0 , 90 )
         for( i = 0; i < 288; i++ ) {
             height = ( this.chart.prices[i][1] - high[288][1] ) / ( high[0][1] - high[288][1] )
             this.ctx.lineTo( i * 1.0417 , ( 40 * height + 70 ))
         }
-        this.ctx.lineTo( 300 , 150 )
+        this.ctx.lineTo( 300 , 90 )
         this.ctx.fill()
 
         this.ctx.beginPath()
