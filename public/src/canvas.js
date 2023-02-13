@@ -43,13 +43,13 @@ export class Canvas {
             this.model = gltf.scene
             this.model.position.set( 0 , -1 , 0 )
             this.model.children[0].children[0].material = new THREE.MeshStandardMaterial({
-                color : 0xFF9933 ,
+                color : new THREE.Color(`hsl(${Math.random()*360} , 100% , 50% )`) ,
                 metalness : 1.00 ,
-                roughness : 0.10 ,
+                roughness : 0.28 ,
                 envMap : this.envMap
             })
             this.model.children[0].children[1].material = new THREE.MeshStandardMaterial({
-                color : 0xFFFFFFF ,
+                color : 0xFFFFFF ,
                 metalness : 1.00 ,
                 roughness : 0.00 ,
                 envMap : this.envMap
@@ -81,7 +81,7 @@ export class Canvas {
         })
 
         this.planet = new THREE.Mesh(
-            new THREE.SphereGeometry( 10 , 64 , 64 ),
+            new THREE.SphereGeometry( 5 , 64 , 64 ),
             new THREE.MeshNormalMaterial()
         )
         this.planet.position.set( 0 , 0 , -20 )
