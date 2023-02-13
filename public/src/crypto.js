@@ -1,9 +1,12 @@
 export class Crypto {
     constructor( ctx ) {
         this.ctx = ctx
+        this.input = document.getElementById('index')
+        this.list = document.getElementById('list')
         this.crypto = []
         this.Init()
         this.Request()
+        this.input.oninput = () => this.Search( this.input.value.toUpperCase() )
     }
     async Init() {
         this.cap = await fetch('https://api.coingecko.com/api/v3/global').then( res => res.json())
@@ -31,37 +34,53 @@ export class Crypto {
         this.ctx.fillText('Powered By CoinGecko-API' , 150 , 135 )
     }
     async Request() {
-        this.ticker = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1'
-        this.gecko = await fetch( this.ticker ).then( res => res.json())
-        this.gecko.forEach( res => {
-            this.crypto.push({
-                id : res.id ,
-                symbol : res.symbol.toUpperCase() ,
-                name : res.name ,
-                price : res.current_price ,
-                percent : Number(res.price_change_percentage_24h).toFixed(2)
+        let page1 , page2 , page3 , page4
+        page1 = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1'
+        page2 = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=2'
+        page3 = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=3'
+        page4 = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=4'
+        const [ ticker1 , ticker2 , ticker3 , ticker4 ] = await Promise.all([
+            fetch( page1 ).then( res => res.json()) ,
+            fetch( page2 ).then( res => res.json()) ,
+            fetch( page3 ).then( res => res.json()) ,
+            fetch( page4 ).then( res => res.json())
+        ])
+        this.gecko = [ ticker1 , ticker2 , ticker3 , ticker4 ]
+        this.gecko.forEach( page => {
+            page.forEach( res => { 
+                this.crypto.push({
+                    id : res.id ,
+                    symbol : res.symbol.toUpperCase() ,
+                    name : res.name ,
+                    price : res.current_price ,
+                    percent : Number(res.price_change_percentage_24h).toFixed(2)
+                })
             })
         })
     }
+    Search( value ) {
+        this.list.innerHTML = ''
+        let asset , i , newLi
+        if( value === null || value === '' ) return
+        asset = this.crypto.filter( res =>
+            res.id.toUpperCase().slice( 0 , value.length ) === value.toUpperCase() ||
+            res.symbol.slice( 0 , value.length ) === value.toUpperCase()
+        )
+        for( i in asset ) {
+            newLi = document.createElement('li')
+            newLi.id = 'crypto'
+            newLi.innerText = `${asset[i].symbol} ( ${asset[i].name} )`
+            newLi.data = asset[i]
+            this.list.appendChild( newLi )
+        }
+    }
     async Draw( asset ) {
-        this.kline = `https://api.coingecko.com/api/v3/coins/${asset.id}/market_chart?vs_currency=usd&days=1`
-        this.chart = await fetch( this.kline ).then( res => res.json())
-        let high , i , height
-        high = [...this.chart.prices].sort(( a , b ) => a[1] < b[1] )
+        this.input.value = `${asset.symbol} ( ${asset.name} )`
+        this.list.innerHTML = ''
 
         this.ctx.beginPath()
         this.ctx.fillStyle = 'black'
         this.ctx.fillRect( 0 , 0 , 300 , 150 )
-        
-        this.ctx.beginPath()
-        this.ctx.fillStyle = 'orange'
-        this.ctx.moveTo( 0 , 90 )
-        for( i = 0; i < 288; i++ ) {
-            height = ( this.chart.prices[i][1] - high[288][1] ) / ( high[0][1] - high[288][1] )
-            this.ctx.lineTo( i * 1.0417 , ( 40 * height + 70 ))
-        }
-        this.ctx.lineTo( 300 , 90 )
-        this.ctx.fill()
 
         this.ctx.beginPath()
         this.ctx.fillStyle = 'white'
@@ -78,7 +97,7 @@ export class Crypto {
             this.ctx.fillText( `+${asset.percent} %`, 150 , 110 )
         } else {
             this.ctx.fillStyle = 'red'
-            this.ctx.fillText( `${asset.percent} %`, 150 , 100 )
+            this.ctx.fillText( `${asset.percent} %`, 150 , 110 )
         }
         this.ctx.beginPath()
         this.ctx.fillStyle = 'lime'

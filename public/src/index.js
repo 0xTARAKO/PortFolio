@@ -5,11 +5,8 @@ const canvas = new Canvas()
 const crypto = new Crypto( canvas.ctx )
 
 onresize = () => canvas.Resize()
-onkeydown = onkeyup = event => {
-    canvas.Control( event )
-    if( event.type === 'keydown' && event.code === 'KeyP' ) {
-        let promp = prompt('Crypto Currency Name or Symbol').toUpperCase()
-        let asset = crypto.crypto.filter( res => res.id.toUpperCase() === promp || res.symbol === promp )
-        crypto.Draw( asset[0] )
-    }
+onkeydown = onkeyup = onmousemove = event => canvas.Control( event )
+onclick = event => {
+    if( event.target.id === 'index' ) canvas.tps.position.set( 0 , 2 , -5 )
+    if( event.target.id === 'crypto' ) crypto.Draw( event.target.data )
 }
