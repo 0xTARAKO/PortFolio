@@ -10,11 +10,15 @@
     list-style: none;
     user-select: none;
     touch-action: none;
-    font: bold .8rem sans-serif;
+    background: none;
 }
 html,body {
     width: 100vw;
     height: 100vh;
+}
+input {
+    border: solid 1px rgb(255,255,255);
+    color: rgb(255,255,255);
 }
 #fps {
     width: 100%;
@@ -26,21 +30,76 @@ html,body {
     height: 100%;
     pointer-events: none;
 }
+#open {
+    top: 5%; left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    pointer-events: visible;
+}
+#chat {
+    top: 5%; left: 5%;
+    padding: 0 50px 0 5px;
+    width: 300px;
+    height: 30px;
+    border-radius: 50px;
+    text-align: center;
+    pointer-events: visible;
+}
+#send {
+    top: 5%; left: calc(5% + 270px);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    pointer-events: visible;
+}
+#board {
+    top: 15%; left: 5%;
+    width: 300px;
+    height: 70%;
+}
+#text {
+    position: relative;
+    margin: 5% auto;
+    padding: 10px 10px 10px 10px;
+    width: 100%;
+    height: auto;
+    min-height: 30px;
+    border-radius: 20px;
+    border: solid 1px rgb(255,255,255);
+    color: rgb(255,255,255);
+    font-size: .6rem;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+#volume{
+    top: 5%; right: calc(5% + 270px);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    pointer-events: visible;
+}
+#percent{
+    top: 5%; right: calc(5% + 220px);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    pointer-events: visible;
+}
 #index {
     top: 5%; right: 5%;
     width: 200px;
     height: 30px;
     border-radius: 50px;
-    border: solid 1px rgb(255,255,255,.4);
-    background: none;
     text-align: center;
-    color: rgb(255,255,255);
     pointer-events: visible;
 }
 #list {
-    top: 10%; right: 5%;
-    width: 200px;
-    max-height: 90%;
+    top: 15%; right: 5%;
+    width: 300px;
+    max-height: 70%;
     flex-wrap: wrap;
     overflow-y: scroll;
     pointer-events: visible;
@@ -57,7 +116,6 @@ html,body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow-x: scroll;
     pointer-events: visible;
     transition: 1s;
 }

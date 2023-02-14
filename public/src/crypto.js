@@ -28,7 +28,8 @@ export class Crypto {
                     name : res.name ,
                     price : res.current_price ,
                     change : Number(res.price_change_24h).toFixed(4) ,
-                    percent : Number(res.price_change_percentage_24h).toFixed(2)
+                    percent : Number(res.price_change_percentage_24h).toFixed(2) ,
+                    volume : res.total_volume
                 })
             })
         })
@@ -47,6 +48,18 @@ export class Crypto {
             newLi.id = 'crypto'
             newLi.innerText = `${asset[i].symbol} ( ${asset[i].name} )`
             newLi.data = asset[i]
+            this.list.appendChild( newLi )
+        }
+    }
+    Sort( type ) {
+        this.list.innerHTML = ''
+        type ? this.crypto.sort(( a , b ) => b.volume - a.volume ) : this.crypto.sort(( a , b ) => b.percent - a.percent )
+        let i , newLi
+        for( i in this.crypto ) {
+            newLi = document.createElement('li')
+            newLi.id = 'crypto'
+            newLi.innerText = `${this.crypto[i].symbol} ( ${this.crypto[i].name} )`
+            newLi.data = this.crypto[i]
             this.list.appendChild( newLi )
         }
     }
