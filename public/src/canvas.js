@@ -1,5 +1,39 @@
 export class Canvas {
     constructor() {
+        
+        this.data = {
+            mesh : [] ,
+            camera : false ,
+            front : false , 
+            back : false ,
+            left : false ,
+            right : false ,
+            up : false ,
+            down : false ,
+            prevTime : performance.now() ,
+            time : undefined ,
+            delete : undefined ,
+            velocity : new THREE.Vector3() ,
+            direction : new THREE.Vector3() ,
+            vector : new THREE.Vector3() ,
+            euler : new THREE.Euler( 0 , 0 , 0 , 'YXZ')
+        }
+
+        this.ray = {
+            mesh : [] ,
+            front : new THREE.Raycaster() ,
+            back : new THREE.Raycaster() ,
+            left : new THREE.Raycaster() ,
+            right : new THREE.Raycaster() ,
+            up : new THREE.Raycaster() ,
+            down : new THREE.Raycaster() ,
+            frontI : [] ,
+            backI : [] ,
+            leftI : [] ,
+            rightI : [] ,
+            upI : [] ,
+            downI: []
+        }
 
         this.cvs = document.createElement('canvas')
         this.ctx = this.cvs.getContext('2d')
@@ -36,7 +70,6 @@ export class Canvas {
         this.orbit.target.set( 0 , 0 , 0 )
         this.orbit.minDistance = 1
         
-
         this.light = new THREE.HemisphereLight( 0xffffbb , 0x080820 , 1 )
 
         new THREE.GLTFLoader().load( '../img/men.glb' , gltf => {
@@ -72,6 +105,7 @@ export class Canvas {
             this.object.children.forEach( child => {
                 child.children.forEach( ren => {
                     ren.material.envMap = this.envMap
+                    this.ray.mesh.push( ren )
                 })
             })
             this.object.children[2].material = new THREE.MeshStandardMaterial({
@@ -85,26 +119,10 @@ export class Canvas {
             new THREE.MeshNormalMaterial()
         )
         this.planet.position.set( 0 , 0 , -20 )
+        this.ray.mesh.push( this.planet )
 
         this.scene.add( this.light , this.planet )
 
-        this.data = {
-            camera : false ,
-            front : false , 
-            back : false ,
-            left : false ,
-            right : false ,
-            up : false ,
-            down : false ,
-            prevTime : performance.now() ,
-            time : undefined ,
-            delete : undefined ,
-            velocity : new THREE.Vector3() ,
-            direction : new THREE.Vector3() ,
-            vector : new THREE.Vector3() ,
-            euler : new THREE.Euler( 0 , 0 , 0 , 'YXZ')
-        }
-        
         this.Animate()
     }
     Control( event ) {
@@ -141,8 +159,8 @@ export class Canvas {
         }
         if( event.type === 'mousemove' && this.data.camera === true ) {
 			this.data.euler.setFromQuaternion( this.model.quaternion )
-			this.data.euler.y -= event.movementX * 0.001
-			this.data.euler.x -= event.movementY * 0.001
+			this.data.euler.y -= event.movementX * 0.002
+			this.data.euler.x -= event.movementY * 0.002
 			this.data.euler.x = Math.max( -Math.PI / 2 , Math.min( Math.PI / 2 , this.data.euler.x ))
 			this.model.quaternion.setFromEuler( this.data.euler )
         }
@@ -187,6 +205,25 @@ export class Canvas {
             if( this.model.children[0].children[2].material.opacity >= 0 ) {
                 this.model.children[0].children[2].material.opacity -= this.model.children[0].children[2].material.opacity * 0.1
             }
+
+            this.ray.front.set( this.model.position , new THREE.Vector3( 0 , 0 , -1 ) , 0 , 1 )
+            this.ray.frontI = this.ray.front.intersectObjects( this.ray.mesh )
+            if( this.ray.frontI.length > 1 && this.ray.frontI[0].distance <= 0.5 ) this.data.velocity.z += 10
+            this.ray.back.set( this.model.position , new THREE.Vector3( 0 , 0 , 1 ) , 0 , 1 )
+            this.ray.backI = this.ray.back.intersectObjects( this.ray.mesh )
+            if( this.ray.backI.length > 1 && this.ray.backI[0].distance <= 0.5 ) this.data.velocity.z -= 10
+            this.ray.left.set( this.model.position , new THREE.Vector3( -1 , 0 , 0 ) , 0 , 1 )
+            this.ray.leftI = this.ray.left.intersectObjects( this.ray.mesh )
+            if( this.ray.leftI.length > 1 && this.ray.leftI[0].distance <= 0.8 ) this.data.velocity.x -= 10
+            this.ray.right.set( this.model.position , new THREE.Vector3( 1 , 0 , 0 ) , 0 , 1 )
+            this.ray.rightI = this.ray.right.intersectObjects( this.ray.mesh )
+            if( this.ray.rightI.length > 1 && this.ray.rightI[0].distance <= 0.8 ) this.data.velocity.x += 10
+            this.ray.up.set( this.model.position , new THREE.Vector3( 0 , 1 , 0 ) , 0 , 1 )
+            this.ray.upI = this.ray.up.intersectObjects( this.ray.mesh )
+            if( this.ray.upI.length > 1 && this.ray.upI[0].distance <= 0.15 ) this.data.velocity.y += 10
+            this.ray.down.set( this.model.position , new THREE.Vector3( 0 , -1 , 0 ) , 0 , 1 )
+            this.ray.downI = this.ray.down.intersectObjects( this.ray.mesh )
+            if( this.ray.downI.length > 1 && this.ray.downI[0].distance <= 1.7 ) this.data.velocity.y -= 10
         }
 
         this.data.camera ? this.renderer.render( this.scene , this.fps ) : this.renderer.render( this.scene , this.tps )

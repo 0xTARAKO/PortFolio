@@ -4,34 +4,8 @@ export class Crypto {
         this.input = document.getElementById('index')
         this.list = document.getElementById('list')
         this.crypto = []
-        this.Init()
         this.Request()
         this.input.oninput = () => this.Search( this.input.value.toUpperCase() )
-    }
-    async Init() {
-        this.cap = await fetch('https://api.coingecko.com/api/v3/global').then( res => res.json())
-        this.cap_change = this.cap.data.total_market_cap.usd * this.cap.data.market_cap_change_percentage_24h_usd
-        this.ctx.fillStyle = 'black'
-        this.ctx.fillRect( 0 , 0 , 300 , 150 )
-        this.ctx.beginPath()
-        this.ctx.fillStyle = 'white'
-        this.ctx.font = '15px serif'
-        this.ctx.fillText('Crypto Currencies' , 150 , 20 )
-        this.ctx.fillText('Total Market Cap' , 150 , 70 )
-        this.ctx.beginPath()
-        this.ctx.fillStyle = 'white'
-        this.ctx.font = '25px serif'
-        this.ctx.fillText( this.cap.data.active_cryptocurrencies , 150 , 50 )
-        this.ctx.fillText(`${( this.cap.data.total_market_cap.usd / 1000000000000 ).toFixed(2)}T $` , 150 , 100 )
-        this.ctx.beginPath()
-        this.ctx.font = '10px serif'
-        this.cap.data.market_cap_change_percentage_24h_usd >= 0 ? this.ctx.fillStyle = 'green' : this.ctx.fillStyle = 'red'
-        this.ctx.fillText(`${( this.cap_change / 1000000000 ).toFixed(2)}M $` , 120 , 115 )
-        this.ctx.fillText(`${( this.cap.data.market_cap_change_percentage_24h_usd ).toFixed(2)}%` , 180 , 115 )
-        this.ctx.beginPath()
-        this.ctx.fillStyle = 'lime'
-        this.ctx.font = '10px serif'
-        this.ctx.fillText('Powered By CoinGecko-API' , 150 , 135 )
     }
     async Request() {
         let page1 , page2 , page3 , page4
@@ -43,7 +17,7 @@ export class Crypto {
             fetch( page1 ).then( res => res.json()) ,
             fetch( page2 ).then( res => res.json()) ,
             fetch( page3 ).then( res => res.json()) ,
-            fetch( page4 ).then( res => res.json())
+            fetch( page4 ).then( res => res.json()) ,
         ])
         this.gecko = [ ticker1 , ticker2 , ticker3 , ticker4 ]
         this.gecko.forEach( page => {
@@ -53,10 +27,12 @@ export class Crypto {
                     symbol : res.symbol.toUpperCase() ,
                     name : res.name ,
                     price : res.current_price ,
+                    change : Number(res.price_change_24h).toFixed(4) ,
                     percent : Number(res.price_change_percentage_24h).toFixed(2)
                 })
             })
         })
+        this.Draw( this.crypto[0] )
     }
     Search( value ) {
         this.list.innerHTML = ''
@@ -74,7 +50,7 @@ export class Crypto {
             this.list.appendChild( newLi )
         }
     }
-    async Draw( asset ) {
+    Draw( asset ) {
         this.input.value = `${asset.symbol} ( ${asset.name} )`
         this.list.innerHTML = ''
 
@@ -84,24 +60,24 @@ export class Crypto {
 
         this.ctx.beginPath()
         this.ctx.fillStyle = 'white'
-        this.ctx.font = '20px serif'
+        this.ctx.font = '25px serif'
         this.ctx.fillText( `${asset.symbol} ( ${asset.name} )`, 150 , 30 )
         this.ctx.beginPath()
         this.ctx.fillStyle = 'white'
-        this.ctx.font = '40px serif'
-        this.ctx.fillText( `${asset.price} $`, 150 , 80 )
+        this.ctx.font = '50px serif'
+        this.ctx.fillText( `${asset.price} $`, 150 , 85 )
         this.ctx.beginPath()
         this.ctx.font = '20px serif'
         if( asset.percent >= 0 ) {
             this.ctx.fillStyle = 'green'
-            this.ctx.fillText( `+${asset.percent} %`, 150 , 110 )
+            this.ctx.fillText( `+${asset.change}$    +${asset.percent}%`, 150 , 110 )
         } else {
             this.ctx.fillStyle = 'red'
-            this.ctx.fillText( `${asset.percent} %`, 150 , 110 )
+            this.ctx.fillText( `${asset.change}$    ${asset.percent}%`, 150 , 110 )
         }
         this.ctx.beginPath()
-        this.ctx.fillStyle = 'lime'
-        this.ctx.font = '10px serif'
-        this.ctx.fillText('Powered By CoinGecko-API' , 150 , 135 )
+        this.ctx.fillStyle = 'white'
+        this.ctx.font = '15px serif'
+        this.ctx.fillText('Powered By CoinGecko' , 150 , 135 )
     }
 }
