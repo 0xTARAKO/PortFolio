@@ -1,6 +1,5 @@
 import { Canvas } from './canvas.js'
 import { Crypto } from './crypto.js'
-import { Chat } from './chat.js'
 
 const canvas = new Canvas()
 const crypto = new Crypto( canvas.ctx )
