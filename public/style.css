@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Tourney:ital@1&display=swap');
 ::-webkit-scrollbar { width: 1px; height: 1px; }
 ::-webkit-scrollbar-thumb{ background: rgb(255,255,255,.4); }
 * {
@@ -11,21 +12,19 @@
     user-select: none;
     touch-action: none;
     background: none;
+    font: normal 1rem 'Tourney', cursive;
+    color: rgb(255,255,255);
 }
 html,body {
     width: 100vw;
     height: 100vh;
 }
-input {
-    border: solid 1px rgb(255,255,255);
-    color: rgb(255,255,255);
-}
 #open {
-    top: 5%; left: 50%;
-    transform: translateX(-50%);
+    top: 5%; left: 5%;
     width: 30px;
     height: 30px;
     border-radius: 50%;
+    border: solid 1px rgb(255,255,255);
     pointer-events: visible;
 }
 #fps {
@@ -39,31 +38,34 @@ input {
     pointer-events: none;
 }
 #volume{
-    top: 5%; right: calc(5% + 270px);
+    top: 5%; left: calc(5% + 50px);
     width: 30px;
     height: 30px;
     border-radius: 50%;
+    border: solid 1px rgb(255,255,255);
     pointer-events: visible;
 }
 #percent{
-    top: 5%; right: calc(5% + 220px);
+    top: 5%; left: calc(5% + 100px);
     width: 30px;
     height: 30px;
     border-radius: 50%;
+    border: solid 1px rgb(255,255,255);
     pointer-events: visible;
 }
 #index {
-    top: 5%; right: 5%;
+    top: 5%; left: calc(5% + 150px);
     width: 200px;
     height: 30px;
-    border-radius: 50px;
+    border-radius: 20px;
+    border: solid 1px rgb(255,255,255);
     text-align: center;
     pointer-events: visible;
 }
 #list {
-    top: 15%; right: 5%;
-    width: 300px;
-    max-height: 70%;
+    top: 15%; left: 5%;
+    width: 350px;
+    max-height: 80%;
     flex-wrap: wrap;
     overflow-y: scroll;
     pointer-events: visible;
@@ -74,15 +76,14 @@ input {
     width: 100%;
     height: 30px;
     border-radius: 50px;
-    background: rgb(255,255,255);
+    border: solid 1px rgb(255,255,255);
     backdrop-filter: blur(5px);
-    color: black;
     display: flex;
     justify-content: center;
     align-items: center;
     pointer-events: visible;
-    transition: 1s;
 }
 #crypto:hover {
-    background: rgb(0,255,255);
+    border: solid 1px rgb(0,255,255);
+    color: rgb(0,255,255);
 }

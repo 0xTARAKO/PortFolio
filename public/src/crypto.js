@@ -10,32 +10,50 @@ export class Crypto {
         this.input.oninput = () => this.Search( this.input.value.toUpperCase() )
     }
     async Request() {
-        let page1 , page2 , page3 , page4
-        page1 = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1'
-        page2 = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=2'
-        page3 = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=3'
-        page4 = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=4'
-        const [ ticker1 , ticker2 , ticker3 , ticker4 ] = await Promise.all([
-            fetch( page1 ).then( res => res.json()) ,
-            fetch( page2 ).then( res => res.json()) ,
-            fetch( page3 ).then( res => res.json()) ,
-            fetch( page4 ).then( res => res.json()) ,
+        let cap , percent , volume , dominance
+        let url01 = 'https://api.coingecko.com/api/v3/global'
+        let url02 = 'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1'
+        const [ market , ticker ] = await Promise.all([
+            fetch( url01 ).then( res => res.json()) ,
+            fetch( url02 ).then( res => res.json()) ,
         ])
-        this.gecko = [ ticker1 , ticker2 , ticker3 , ticker4 ]
-        this.gecko.forEach( page => {
-            page.forEach( res => { 
-                this.crypto.push({
-                    id : res.id ,
-                    symbol : res.symbol.toUpperCase() ,
-                    name : res.name ,
-                    price : res.current_price ,
-                    change : Number(res.price_change_24h).toFixed(4) ,
-                    percent : Number(res.price_change_percentage_24h).toFixed(2) ,
-                    volume : res.total_volume
-                })
+        cap = market.data.total_market_cap.usd / 1000000000
+        percent = ( market.data.market_cap_change_percentage_24h_usd ).toFixed(2)
+        volume = ( cap * ( percent / 100 )).toFixed(2)
+        dominance = ( market.data.market_cap_percentage.btc ).toFixed(2)
+
+        this.ctx.beginPath()
+        this.ctx.fillStyle = 'black'
+        this.ctx.fillRect( 0 , 0 , 300 , 150 )
+        this.ctx.beginPath()
+        this.ctx.fillStyle = 'white'
+        this.ctx.font = '15px serif'
+        this.ctx.fillText( 'Total Market Cap' , 150 , 20 )
+        this.ctx.fillStyle = 'green'
+        this.ctx.font = '30px serif'
+        this.ctx.fillText(`$${cap.toFixed(2)} B` , 150 , 50 )
+        this.ctx.font = '15px serif'
+        this.ctx.fillText(`$${volume} B  /  ${percent}%` , 150 , 70 )
+        this.ctx.fillStyle = 'white'
+        this.ctx.fillText( 'Bitcoin dominance' , 150 , 90 )
+        this.ctx.font = '20px serif'
+        this.ctx.fillText( `${dominance}%` , 150 , 115 )
+
+        this.ctx.font = '10px serif'
+        this.ctx.fillText('Powered By CoinGecko' , 150 , 135 )
+        
+
+        ticker.forEach( res => { 
+            this.crypto.push({
+                id : res.id ,
+                symbol : res.symbol.toUpperCase() ,
+                name : res.name ,
+                price : res.current_price ,
+                change : Number(res.price_change_24h).toFixed(4) ,
+                percent : Number(res.price_change_percentage_24h).toFixed(2) ,
+                volume : res.total_volume
             })
         })
-        this.Draw( this.crypto[0] )
     }
     View() {
         if( this.open ) {
@@ -58,7 +76,7 @@ export class Crypto {
         for( i in asset ) {
             newLi = document.createElement('li')
             newLi.id = 'crypto'
-            newLi.innerText = `${asset[i].symbol} ( ${asset[i].name} )`
+            newLi.innerText = `${asset[i].symbol} // ${asset[i].name}`
             newLi.data = asset[i]
             this.list.appendChild( newLi )
         }
@@ -70,39 +88,29 @@ export class Crypto {
         for( i in this.crypto ) {
             newLi = document.createElement('li')
             newLi.id = 'crypto'
-            newLi.innerText = `${this.crypto[i].symbol} ( ${this.crypto[i].name} )`
+            newLi.innerText = `${this.crypto[i].symbol} // ${this.crypto[i].name}`
             newLi.data = this.crypto[i]
             this.list.appendChild( newLi )
         }
     }
     Draw( asset ) {
-        this.input.value = `${asset.symbol} ( ${asset.name} )`
+        this.input.value = asset.name
         this.list.innerHTML = ''
 
         this.ctx.beginPath()
         this.ctx.fillStyle = 'black'
         this.ctx.fillRect( 0 , 0 , 300 , 150 )
 
-        this.ctx.beginPath()
         this.ctx.fillStyle = 'white'
         this.ctx.font = '25px serif'
-        this.ctx.fillText( `${asset.symbol} ( ${asset.name} )`, 150 , 30 )
-        this.ctx.beginPath()
-        this.ctx.fillStyle = 'white'
+        this.ctx.fillText( `${asset.symbol} // ${asset.name}`, 150 , 30 )
         this.ctx.font = '50px serif'
-        this.ctx.fillText( `${asset.price} $`, 150 , 85 )
-        this.ctx.beginPath()
+        this.ctx.fillText( `$${asset.price}`, 150 , 85 )
         this.ctx.font = '20px serif'
-        if( asset.percent >= 0 ) {
-            this.ctx.fillStyle = 'green'
-            this.ctx.fillText( `+${asset.change}$    +${asset.percent}%`, 150 , 110 )
-        } else {
-            this.ctx.fillStyle = 'red'
-            this.ctx.fillText( `${asset.change}$    ${asset.percent}%`, 150 , 110 )
-        }
-        this.ctx.beginPath()
+        asset.percent >= 0 ? this.ctx.fillStyle = 'green' : this.ctx.fillStyle = 'red'
+        this.ctx.fillText( `$${asset.change}   ${asset.percent}%`, 150 , 110 )
         this.ctx.fillStyle = 'white'
-        this.ctx.font = '15px serif'
+        this.ctx.font = '10px serif'
         this.ctx.fillText('Powered By CoinGecko' , 150 , 135 )
     }
 }

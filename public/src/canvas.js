@@ -115,10 +115,10 @@ export class Canvas {
         })
 
         this.sphere = new THREE.Mesh(
-            new THREE.SphereGeometry( 5 , 64 , 64 ),
+            new THREE.SphereGeometry( 3 , 64 , 64 ),
             new THREE.MeshNormalMaterial()
         )
-        this.sphere.position.set( 0 , 5 , -10 )
+        this.sphere.position.set( 0 , 3 , -10 )
 
         this.scene.add( this.light , this.sphere )
 
