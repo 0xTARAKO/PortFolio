@@ -10,5 +10,5 @@ onclick = event => {
     if( event.target.id === 'open' ) crypto.View()
     if( event.target.id === 'volume' ) crypto.Sort( true )
     if( event.target.id === 'percent' ) crypto.Sort( false )
-    if( event.target.id === 'crypto' )  canvas.tps.position.set( 0 , 2 , -5 ) , crypto.Draw( event.target.data )
+    if( event.target.id === 'crypto' )  canvas.tps.position.set( 0 , 5 , -5 ) , crypto.Draw( event.target.data )
 }

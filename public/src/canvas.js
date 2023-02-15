@@ -64,17 +64,17 @@ export class Canvas {
         this.fps.position.set( 0 , 0 , 0 )
 
         this.tps = new THREE.PerspectiveCamera( 50 , innerWidth / innerHeight , 0.1 , 50000 )
-        this.tps.position.set( 0 , 0 , 10 )
+        this.tps.position.set( 0 , 5 , 10 )
 
         this.orbit = new THREE.OrbitControls( this.tps , this.canvas )
-        this.orbit.target.set( 0 , 0 , 0 )
+        this.orbit.target.set( 0 , 5 , 0 )
         this.orbit.minDistance = 1
         
         this.light = new THREE.HemisphereLight( 0xffffbb , 0x080820 , 1 )
 
-        new THREE.GLTFLoader().load( '../img/men.glb' , gltf => {
+        new THREE.GLTFLoader().load( '../glb/men.glb' , gltf => {
             this.model = gltf.scene
-            this.model.position.set( 0 , -1 , 0 )
+            this.model.position.set( 0 , 2 , 0 )
             this.model.children[0].children[0].material = new THREE.MeshStandardMaterial({
                 color : new THREE.Color(`hsl(${Math.random()*360} , 100% , 50% )`) ,
                 metalness : 1.00 ,
@@ -100,7 +100,7 @@ export class Canvas {
             this.scene.add( this.model )
         })
 
-        new THREE.GLTFLoader().load( '../img/object.glb' , gltf => {
+        new THREE.GLTFLoader().load( '../glb/object.glb' , gltf => {
             this.object = gltf.scene
             this.object.children.forEach( child => {
                 child.children.forEach( ren => {
@@ -114,14 +114,13 @@ export class Canvas {
             this.scene.add( this.object )
         })
 
-        this.planet = new THREE.Mesh(
+        this.sphere = new THREE.Mesh(
             new THREE.SphereGeometry( 5 , 64 , 64 ),
             new THREE.MeshNormalMaterial()
         )
-        this.planet.position.set( 0 , 0 , -20 )
-        this.ray.mesh.push( this.planet )
+        this.sphere.position.set( 0 , 5 , -10 )
 
-        this.scene.add( this.light , this.planet )
+        this.scene.add( this.light , this.sphere )
 
         this.Animate()
     }
@@ -208,22 +207,22 @@ export class Canvas {
 
             this.ray.front.set( this.model.position , new THREE.Vector3( 0 , 0 , -1 ) , 0 , 1 )
             this.ray.frontI = this.ray.front.intersectObjects( this.ray.mesh )
-            if( this.ray.frontI.length > 1 && this.ray.frontI[0].distance <= 0.5 ) this.data.velocity.z += 10
+            if( this.ray.frontI.length > 1 && this.ray.frontI[0].distance <= 0.5 ) this.data.velocity.z += 5
             this.ray.back.set( this.model.position , new THREE.Vector3( 0 , 0 , 1 ) , 0 , 1 )
             this.ray.backI = this.ray.back.intersectObjects( this.ray.mesh )
-            if( this.ray.backI.length > 1 && this.ray.backI[0].distance <= 0.5 ) this.data.velocity.z -= 10
+            if( this.ray.backI.length > 1 && this.ray.backI[0].distance <= 0.5 ) this.data.velocity.z -= 5
             this.ray.left.set( this.model.position , new THREE.Vector3( -1 , 0 , 0 ) , 0 , 1 )
             this.ray.leftI = this.ray.left.intersectObjects( this.ray.mesh )
-            if( this.ray.leftI.length > 1 && this.ray.leftI[0].distance <= 0.8 ) this.data.velocity.x -= 10
+            if( this.ray.leftI.length > 1 && this.ray.leftI[0].distance <= 0.8 ) this.data.velocity.x -= 5
             this.ray.right.set( this.model.position , new THREE.Vector3( 1 , 0 , 0 ) , 0 , 1 )
             this.ray.rightI = this.ray.right.intersectObjects( this.ray.mesh )
-            if( this.ray.rightI.length > 1 && this.ray.rightI[0].distance <= 0.8 ) this.data.velocity.x += 10
+            if( this.ray.rightI.length > 1 && this.ray.rightI[0].distance <= 0.8 ) this.data.velocity.x += 5
             this.ray.up.set( this.model.position , new THREE.Vector3( 0 , 1 , 0 ) , 0 , 1 )
             this.ray.upI = this.ray.up.intersectObjects( this.ray.mesh )
-            if( this.ray.upI.length > 1 && this.ray.upI[0].distance <= 0.15 ) this.data.velocity.y += 10
+            if( this.ray.upI.length > 1 && this.ray.upI[0].distance <= 0.15 ) this.data.velocity.y += 5
             this.ray.down.set( this.model.position , new THREE.Vector3( 0 , -1 , 0 ) , 0 , 1 )
             this.ray.downI = this.ray.down.intersectObjects( this.ray.mesh )
-            if( this.ray.downI.length > 1 && this.ray.downI[0].distance <= 1.7 ) this.data.velocity.y -= 10
+            if( this.ray.downI.length > 1 && this.ray.downI[0].distance <= 1.8 ) this.data.velocity.y -= 5
         }
 
         this.data.camera ? this.renderer.render( this.scene , this.fps ) : this.renderer.render( this.scene , this.tps )
