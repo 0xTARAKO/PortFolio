@@ -4,7 +4,7 @@ export class Chat {
         this.chat = document.getElementById('chat')
         this.board = document.getElementById('board')
         this.window = true
-        this.socket = io('http://localhost:3000')
+        this.socket = io()
         this.socket.on('receive' , event => { this.Receive( event )})
     }
     Receive( event ) {
