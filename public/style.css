@@ -38,42 +38,6 @@ input {
     border-radius: 50%;
     pointer-events: visible;
 }
-#chat {
-    top: 5%; left: 5%;
-    padding: 0 50px 0 5px;
-    width: 300px;
-    height: 30px;
-    border-radius: 50px;
-    text-align: center;
-    pointer-events: visible;
-}
-#send {
-    top: 5%; left: calc(5% + 270px);
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    pointer-events: visible;
-}
-#board {
-    top: 15%; left: 5%;
-    width: 300px;
-    height: 70%;
-}
-#text {
-    position: relative;
-    margin: 5% auto;
-    padding: 10px 10px 10px 10px;
-    width: 100%;
-    height: auto;
-    min-height: 30px;
-    border-radius: 20px;
-    border: solid 1px rgb(255,255,255);
-    color: rgb(255,255,255);
-    font-size: .6rem;
-    display: flex;
-    justify-content: start;
-    align-items: center;
-}
 #volume{
     top: 5%; right: calc(5% + 270px);
     width: 30px;
