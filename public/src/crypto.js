@@ -1,8 +1,10 @@
 export class Crypto {
     constructor( ctx ) {
         this.ctx = ctx
+        this.tps = document.getElementById('tps')
         this.input = document.getElementById('index')
         this.list = document.getElementById('list')
+        this.open = true
         this.crypto = []
         this.Request()
         this.input.oninput = () => this.Search( this.input.value.toUpperCase() )
@@ -34,6 +36,16 @@ export class Crypto {
             })
         })
         this.Draw( this.crypto[0] )
+    }
+    View() {
+        if( this.open ) {
+            this.open = false
+            this.tps.hidden = true
+        }
+        else {
+            this.open = true
+            this.tps.hidden = false
+        }
     }
     Search( value ) {
         this.list.innerHTML = ''
