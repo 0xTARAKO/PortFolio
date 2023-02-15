@@ -3,7 +3,11 @@ const http = require('http')
 const { Server } = require('socket.io')
 const app = express()
 const server = http.createServer( app )
-const io = new Server( server )
+const io = new Server( server ,{
+    cors : {
+        origin : ['https://port-folio-git-main-0xtarako.vercel.app/']
+    }
+})
 
 app.use( express.static(`${__dirname}/public`))
 server.listen( 3000 )
